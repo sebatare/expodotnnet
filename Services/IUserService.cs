@@ -7,5 +7,6 @@ public interface IUserService
      //Task<IdentityResult> LogoutAsync();
      Task<bool> SendPasswordResetTokenAsync(string email);
     Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
+    Task<UserDetailsDto> GetUserDetailsAsync(string userId);
 
 }

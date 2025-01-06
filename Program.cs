@@ -85,14 +85,12 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:8081")  // Asegúrate de que esta URL sea la correcta para tu cliente
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();  // Permitir credenciales (tokens JWT, cookies, etc.)
-        });
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 

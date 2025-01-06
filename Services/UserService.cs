@@ -1,9 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 
 public class UserService : IUserService
@@ -21,6 +19,8 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
+
+    //REGISTRO DE USUARIO
     public async Task<IdentityResult> RegisterUserAsync(RegisterDto model)
     {
         // Verificar si el correo electrónico ya existe
@@ -53,6 +53,8 @@ public class UserService : IUserService
         }
     }
 
+
+    //INICIO DE SESIÓN
     public async Task<(bool Success, string Token)> LoginUserAsync(LoginDto model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -66,9 +68,7 @@ public class UserService : IUserService
         return (true, token);
     }
 
-
-
-
+    //TOKEN DE REINICIO CONTRASEÑA
     public async Task<bool> SendPasswordResetTokenAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -85,6 +85,8 @@ public class UserService : IUserService
         return true;
     }
 
+
+    //REINICIAR CONTRASEÑA
     public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -96,7 +98,20 @@ public class UserService : IUserService
         return await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
     }
 
+    //OBTENER DETALLES DE USUARIO
+    public async Task<UserDetailsDto> GetUserDetailsAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId); // Usa UserManager para buscar el usuario
+        if (user == null) return null;
 
+        // Mapea los datos a un DTO
+        return new UserDetailsDto
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email
+        };
+    }
 
     //GENRADOR DE TOKEN
     public async Task<string> GenerateJwtTokenAsync(User user)
@@ -109,10 +124,12 @@ public class UserService : IUserService
 
         var claims = new List<Claim>
     {
+
+        //DEFINO LA INFORMACIO QUE VA A LLEVAR MI JWT
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Asegúrate de que user.Id sea string
-        // Agrega más claims si es necesario
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+        // SE PUEDEN AGREGAR MAS CLAIMS
     };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -120,13 +137,15 @@ public class UserService : IUserService
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1), // Configura la expiración
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = "tu_issuer",  // Asegúrate de que estos valores sean consistentes
-            Audience = "tu_audience"
+            Issuer = "your_issuer",  // Asegúrate de que estos valores sean consistentes
+            Audience = "your_audience"
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+
 
 
 

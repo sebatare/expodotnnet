@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 public class UserController : ControllerBase
@@ -80,6 +83,28 @@ public class UserController : ControllerBase
 
         return Ok(new { message = "Contraseña restablecida exitosamente." });
     }
+
+    [HttpGet("user-details")]
+    [Authorize] // Requiere autenticación
+    public async Task<IActionResult> GetUserDetails()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtener ID del usuario del JWT
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new { message = "User not authorized" });
+        }
+
+        var userDetails = await _userService.GetUserDetailsAsync(userId); // Llama al servicio para obtener datos
+        if (userDetails == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        return Ok(userDetails); // Devuelve los datos del usuario
+    }
+
+
 
 
 
