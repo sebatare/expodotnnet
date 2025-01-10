@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -84,28 +83,37 @@ public class UserController : ControllerBase
         return Ok(new { message = "Contraseña restablecida exitosamente." });
     }
 
+    //HAY QUE ESPECIFICAR EL TIPO DE AUTENTICACION, YA QUE POR DEFAULT, CON IDENTIDAD SE USA COOKIES
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [HttpGet("user-details")]
-    [Authorize] // Requiere autenticación
     public async Task<IActionResult> GetUserDetails()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtener ID del usuario del JWT
+        // Obtén el ID del usuario desde el token JWT
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        // Si no se encuentra el ID del usuario, regresa un error 401 Unauthorized
         if (string.IsNullOrEmpty(userId))
         {
-            return Unauthorized(new { message = "User not authorized" });
+            return Unauthorized(new { message = "Token no válido o expirado" });
         }
 
-        var userDetails = await _userService.GetUserDetailsAsync(userId); // Llama al servicio para obtener datos
+        // Llama al servicio para obtener los detalles del usuario
+        var userDetails = await _userService.GetUserDetailsAsync(userId);
+
+        // Si no se encuentran los detalles del usuario, regresa un error 404 NotFound
         if (userDetails == null)
         {
-            return NotFound(new { message = "User not found" });
+            return NotFound(new { message = "Usuario no encontrado" });
         }
 
-        return Ok(userDetails); // Devuelve los datos del usuario
+        // Si todo está bien, regresa los detalles del usuario
+        return Ok(userDetails);
     }
 
-
-
-
-
+    [HttpGet("get-all-users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userService.GetAllUsersAsync();
+        return Ok(users);
+    }
 }

@@ -12,12 +12,11 @@ public class User : IdentityUser
 
     public string? Rut { get; set; }
 
-    public string? Address { get; set; }
-
-    public int? NumberAddress { get; set; }
 
     // Permitir que el campo Username sea nulo o vacío
     public override string? UserName { get; set; }
+
+    public virtual ICollection<Address> Addresses { get; set; }
 
 
 }

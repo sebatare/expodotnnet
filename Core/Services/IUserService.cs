@@ -9,4 +9,7 @@ public interface IUserService
     Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
     Task<UserDetailsDto> GetUserDetailsAsync(string userId);
 
+    Task<List<UserDetailsDto>> GetAllUsersAsync();
+    
+
 }

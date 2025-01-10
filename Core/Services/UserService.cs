@@ -2,21 +2,24 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 public class UserService : IUserService
 {
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
 
     private readonly IEmailService _emailService;
 
-    public UserService(UserManager<User> userManager, IEmailService emailService, IConfiguration configuration)
+    public UserService(UserManager<User> userManager, IEmailService emailService, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _emailService = emailService;
         _configuration = configuration;
+        _roleManager = roleManager;
     }
 
 
@@ -36,13 +39,15 @@ public class UserService : IUserService
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            UserName = model.Email // Usar el correo como el nombre de usuario
+            UserName = model.Email
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (result.Succeeded)
         {
+            //ASIGNACION DE ROL AL CREAR USUARIO
+            await _userManager.AddToRoleAsync(user, "Administrador");
             // Si la creación del usuario fue exitosa, devolvemos el resultado con éxito
             return IdentityResult.Success;
         }
@@ -104,14 +109,49 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(userId); // Usa UserManager para buscar el usuario
         if (user == null) return null;
 
+        // Obtener los roles del usuario
+        var roles = await _userManager.GetRolesAsync(user);
+
         // Mapea los datos a un DTO
         return new UserDetailsDto
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email
+            Email = user.Email,
+            Roles = roles.ToList() // Asignar los roles al DTO
         };
     }
+
+
+
+
+    public async Task<List<UserDetailsDto>> GetAllUsersAsync()
+    {
+        var users = await _userManager.Users.ToListAsync();
+        var userDetails = new List<UserDetailsDto>();
+
+        foreach (var user in users)
+        {
+            // Obtener los roles del usuario
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // Crear el DTO con los detalles del usuario
+            var userDetail = new UserDetailsDto
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Roles = roles.ToList() // Asignar los roles del usuario
+            };
+
+            // Agregar el DTO a la lista
+            userDetails.Add(userDetail);
+        }
+
+        return userDetails;
+    }
+
+
 
     //GENRADOR DE TOKEN
     public async Task<string> GenerateJwtTokenAsync(User user)
@@ -135,7 +175,7 @@ public class UserService : IUserService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(1), // Configura la expiración
+            Expires = DateTime.UtcNow.AddHours(24), // Configura la expiración
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Issuer = "your_issuer",  // Asegúrate de que estos valores sean consistentes
             Audience = "your_audience"

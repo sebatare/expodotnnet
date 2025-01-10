@@ -1,25 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "/Users/sebastian/expodotnnet/proyectodotnet.csproj": {}
+    "C:\\Users\\Seba\\Proyectos\\expodotnnet\\proyectodotnet.csproj": {}
   },
   "projects": {
-    "/Users/sebastian/expodotnnet/proyectodotnet.csproj": {
+    "C:\\Users\\Seba\\Proyectos\\expodotnnet\\proyectodotnet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/sebastian/expodotnnet/proyectodotnet.csproj",
+        "projectUniqueName": "C:\\Users\\Seba\\Proyectos\\expodotnnet\\proyectodotnet.csproj",
         "projectName": "proyectodotnet",
-        "projectPath": "/Users/sebastian/expodotnnet/proyectodotnet.csproj",
-        "packagesPath": "/Users/sebastian/.nuget/packages/",
-        "outputPath": "/Users/sebastian/expodotnnet/obj/",
+        "projectPath": "C:\\Users\\Seba\\Proyectos\\expodotnnet\\proyectodotnet.csproj",
+        "packagesPath": "C:\\Users\\Seba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Seba\\Proyectos\\expodotnnet\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/sebastian/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Seba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -105,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

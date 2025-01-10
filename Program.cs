@@ -3,35 +3,58 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSignalR()
-                .AddHubOptions<ChatHub>(options =>
-                {
-                    options.EnableDetailedErrors = true;
-                });
+// Agregar servicios de SignalR
+builder.Services.AddSignalR().AddHubOptions<ChatHub>(options => { options.EnableDetailedErrors = true; });
+
+//CONFIGURACION DE RUTAS Y CONTROLADORES
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//CONFIGURACION DE SWAGGER
+builder.Services.AddSwaggerGen(options =>
 {
-    options.UseLazyLoadingProxies() // Habilita Lazy Loading
-           .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); // Configura SQL Server
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
+//CONGIRACION DE BASE DE DATOS
+builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); });
 
-
+//CONFIGURTACION DE IDENTITY
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    // Configura la opción para asegurar que los emails sean únicos
-
+    options.User.RequireUniqueEmail = true;  // Asegura que los emails sean únicos
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
-// Configuración de JWT
-builder.Services.AddAuthentication()
+
+
+//CONFIGURACION DE AUTENTICACION JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -42,47 +65,26 @@ builder.Services.AddAuthentication()
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-        Console.WriteLine("Configuración de JWT completada");
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                Console.WriteLine("Accediendo a OnMessageReceived...");
-                var accessToken = context.Request.Query["access_token"];
-                Console.WriteLine($"Access token recibido: {accessToken}");
-                if (!string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Path.StartsWithSegments("/chathub"))
-                {
-                    Console.WriteLine("Token se asigna correctamente");
-                    context.Token = accessToken;
-                }
-                else
-                {
-                    Console.WriteLine("No se ha recibido token o la ruta es incorrecta");
-                }
-
-                return Task.CompletedTask;
-            }
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ClockSkew = TimeSpan.Zero // Evitar que la expiración se considere un poco más tarde
         };
     });
 
-
-
-
-
+// Agregar servicios personalizados (por ejemplo, IUserService)
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ChatRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<ICanchaService, CanchaService>();
+builder.Services.AddScoped<ICanchaRepository, CanchaRepository>();
+builder.Services.AddScoped<ISedeService, SedeService>();
+builder.Services.AddScoped<ISedeRepository, SedeRepository>();
 
-
-
+// Configuración para el servicio de correo
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-
-
-
-builder.Services.AddAuthorization();
+// Configuración de CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -93,21 +95,27 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Agregar autorización
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Configuración Swagger para autenticación con JWT
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+    });
 }
-
-
 
 app.UseCors("AllowAll");
 
-app.UseAuthentication();
+app.UseAuthentication();  // Asegúrate de que esté antes de UseAuthorization
 app.UseAuthorization();
+
+// Mapear controladores y el Hub de SignalR
 app.MapControllers();
 app.MapHub<ChatHub>("/chathub");
 
