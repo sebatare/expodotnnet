@@ -122,6 +122,26 @@ public class UserService : IUserService
         };
     }
 
+public async Task<UserDetailsDto> GetUserDetailsByEmail(string userEmail)
+
+
+    {
+        var user = await _userManager.FindByEmailAsync(userEmail); // Usa UserManager para buscar el usuario
+        if (user == null) return null;
+
+        // Obtener los roles del usuario
+        var roles = await _userManager.GetRolesAsync(user);
+
+        // Mapea los datos a un DTO
+        return new UserDetailsDto
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Roles = roles.ToList() // Asignar los roles al DTO
+        };
+    }
+
 
 
 

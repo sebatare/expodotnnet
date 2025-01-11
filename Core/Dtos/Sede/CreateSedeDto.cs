@@ -5,6 +5,6 @@ public class CreateSedeDto
     public string? Descripcion { get; set; }
     public string? ImageUrl { get; set; }
 
-
+    public virtual AddressToSedeDto AddressToSedeDto { get; set; }
     public virtual List<int>? IdCanchas { get; set; }
 }

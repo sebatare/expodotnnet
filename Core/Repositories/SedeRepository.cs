@@ -34,6 +34,18 @@ public class SedeRepository : ISedeRepository
         }
     }
 
+    public async Task <Sede> GetSedeByEmailAsync(string userEmail)
+    {
+        try
+        {
+            return await _context.Sede.FirstOrDefaultAsync(s => s.Email == userEmail);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
     public async Task<Sede> AddSedeAsync(Sede newSede)
     {
         try

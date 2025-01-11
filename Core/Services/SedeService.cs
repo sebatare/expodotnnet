@@ -34,6 +34,18 @@ public class SedeService : ISedeService
         };
     }
 
+    public async Task<SedeDto> GetSedeByEmailAsync(string userEmail)
+    {
+        var sede = await _sedeRepository.GetSedeByEmailAsync(userEmail);
+        if (sede == null) return null;
+        return new SedeDto
+        {
+            Id = sede.Id,
+            Nombre = sede.Nombre,
+            Descripcion = sede.Descripcion,
+            idsCanchas = sede.Canchas.Select(c => c.Id).ToList()
+        };
+    }
     public async Task AddSedeAsync(CreateSedeDto dto)
     {
         // Crear una lista vacía para almacenar las canchas (por defecto está vacía)

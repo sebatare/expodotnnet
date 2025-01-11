@@ -5,4 +5,6 @@ public interface ISedeRepository{
     Task<Sede> UpdateSedeAsync(Sede sede);
     Task DeleteSedeAsync(Sede sede);
 
+    Task <Sede> GetSedeByEmailAsync(string userEmail);
+
 }

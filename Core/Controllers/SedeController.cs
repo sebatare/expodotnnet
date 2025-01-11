@@ -13,11 +13,19 @@ public class SedeController : ControllerBase
     public async Task<ActionResult<IEnumerable<SedeDto>>> GetSedes()
     {
         var sedes = await _sedeService.GetAllSedesAsync();
-        return Ok(sedes);
+        return Ok(sedes); 
+    }
+
+
+    [HttpGet("get-sedes-cercanas")]
+    public async Task<ActionResult<IEnumerable<SedesCercanasDto>>> GetSedesCercanas()
+    {
+        var sedes = await _sedeService.GetAllSedesAsync();
+        return Ok(sedes); 
     }
 
     [HttpGet("get-sede/{id}")]
-    public async Task<ActionResult<Sede>> GetSedeById(int id)
+    public async Task<ActionResult<SedeDto>> GetSedeById(int id)
     {
         var sede = await _sedeService.GetSedeByIdAsync(id);
         if (sede == null) return NotFound();

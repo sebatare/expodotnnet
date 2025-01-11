@@ -116,4 +116,15 @@ public class UserController : ControllerBase
         var users = await _userService.GetAllUsersAsync();
         return Ok(users);
     }
+
+    public async Task<IActionResult> GetUserDetailsByEmail(string email)
+    {
+        var userDetails = await _userService.GetUserDetailsByEmail(email);
+        if (userDetails == null)
+        {
+            return NotFound(new { message = "Usuario no encontrado" });
+        }
+
+        return Ok(userDetails);
+    }
 }
