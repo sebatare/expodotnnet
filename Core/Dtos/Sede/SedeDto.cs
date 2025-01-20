@@ -9,4 +9,6 @@ public class SedeDto
     public string? ImageUrl { get; set; }
 
     public virtual List<int>? idsCanchas { get; set; }
+
+    public AddressToSedeDto Address { get; set; } // Add this line
 }

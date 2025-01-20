@@ -11,15 +11,26 @@ public class SedeService : ISedeService
     public async Task<IEnumerable<SedeDto>> GetAllSedesAsync()
     {
         var sedes = await _sedeRepository.GetAllSedesAsync();
-        
-        return sedes.Select(s => new SedeDto
+
+        return sedes.Select(static s => new SedeDto
         {
             Id = s.Id,
             Nombre = s.Nombre,
             Descripcion = s.Descripcion,
-            idsCanchas = s.Canchas.Select(c => c.Id).ToList()
+            ImageUrl = s.ImageUrl,
+            idsCanchas = s.Canchas.Select(c => c.Id).ToList(),
+
+            // Aquí mapear Address directamente
+            Address = s.Address != null ? new AddressToSedeDto
+            {
+                Calle = s.Address.Calle,
+                Numero = s.Address.Numero,
+                Comuna = s.Address.Comuna
+            } : null // Si no hay dirección, se asigna null
         });
     }
+
+
 
     public async Task<SedeDto> GetSedeByIdAsync(int id)
     {

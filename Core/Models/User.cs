@@ -17,6 +17,9 @@ public class User : IdentityUser
     public override string? UserName { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; }
+    public virtual ICollection<Amistad> Amistades { get; set; }
+    public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
+    public virtual ICollection<Reserva> Reservas { get; set; }
 
 
 }
