@@ -11,11 +11,13 @@ public class CanchaService : ICanchaService
     {
         var cancha = new Cancha
         {
+            Nombre = dto.Nombre,
             Capacidad = dto.Capacidad,
             Largo = dto.Largo,
             Ancho = dto.Ancho,
             Observacion = dto.Observacion,
-            ImageUrl = dto.ImageUrl
+            ImageUrl = dto.ImageUrl,
+            SedeId = dto.SedeId
         };
         await _canchaRepository.AddCanchaAsync(cancha);
     }
@@ -53,11 +55,13 @@ public class CanchaService : ICanchaService
     {
         var cancha = await _canchaRepository.GetCanchaByIdAsync(id);
         if (cancha == null) return;
-        cancha.Capacidad = dto.Capacidad;
-        cancha.Largo = dto.Largo;
-        cancha.Ancho = dto.Ancho;
-        cancha.Observacion = dto.Observacion;
-        cancha.ImageUrl = dto.ImageUrl;
+        cancha.Nombre = dto.Nombre;
+        // cancha.Capacidad = dto.Capacidad;
+        // cancha.Largo = dto.Largo;
+        // cancha.Ancho = dto.Ancho;
+        // cancha.Observacion = dto.Observacion;
+        // cancha.ImageUrl = dto.ImageUrl;
+        // cancha.SedeId = dto.SedeId;
         await _canchaRepository.UpdateCanchaAsync(cancha);
     }
 
@@ -68,4 +72,19 @@ public class CanchaService : ICanchaService
         await _canchaRepository.DeleteCanchaAsync(cancha.Id);
     }
 
+    public async Task<IEnumerable<CanchaDto>> GetCanchasBySedeAsync(int sedeId)
+    {
+        var canchas = await _canchaRepository.GetCanchasBySedeAsync(sedeId);
+        return canchas.Select(c => new CanchaDto
+        {
+            Id = c.Id,
+            Nombre = c.Nombre,
+            Capacidad = c.Capacidad,
+            Largo = c.Largo,
+            Ancho = c.Ancho,
+            Observacion = c.Observacion,
+            ImageUrl = c.ImageUrl,
+            SedeId = c.SedeId
+        });
+    }
 }

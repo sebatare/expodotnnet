@@ -1,5 +1,6 @@
 public class CreateCanchaDto
 {
+    public string Nombre { get; set; }
     public int? Capacidad { get; set; }
 
     public float? Largo { get; set; }
@@ -8,4 +9,6 @@ public class CreateCanchaDto
     public string? Observacion { get; set; }
 
     public string? ImageUrl { get; set; }
+
+    public int? SedeId { get; set; }
 }

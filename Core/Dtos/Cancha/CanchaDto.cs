@@ -2,6 +2,8 @@ public class CanchaDto
 {
     public int Id { get; set; }
 
+    public string? Nombre { get; set; }
+
     public int? Capacidad { get; set; }
 
     public float? Largo { get; set; }
@@ -11,8 +13,7 @@ public class CanchaDto
 
     public string? ImageUrl { get; set; }
 
-    public virtual Sede Sede { get; set; }
+    public int? SedeId { get; set; }
 
-    public int SedeId { get; set; }
 
 }

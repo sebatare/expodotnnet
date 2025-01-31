@@ -8,6 +8,8 @@ public interface ICanchaRepository
     Task DeleteCanchaAsync(int id);
 
     Task<List<Cancha>> GetCanchasByIdsAsync(List<int> ids);
+    
+    Task<IEnumerable<Cancha>> GetCanchasBySedeAsync(int sedeId);
 
 
 }

@@ -1,20 +1,23 @@
 public class Reserva
 {
     public int Id { get; set; }
-    public DateTime FechaHoraInicio { get; set; }
-    public DateTime FechaHoraFin { get; set; }
+    public DateTime  FechaCreacion { get; set; }
+
+    public DateTime Fecha { get; set; }
+    public DateTime  HoraInicio { get; set; }
+    public DateTime  HoraTermino { get; set; }
 
     // Relación con Usuario
-    public int UsuarioId { get; set; }
-    public Usuario Usuario { get; set; }
+    public string? UsuarioId { get; set; }
+    public virtual User Usuario { get; set; }
 
     // Relación con Cancha
-    public int CanchaId { get; set; }
-    public Cancha Cancha { get; set; }
+    public int? CanchaId { get; set; }
+    public virtual Cancha Cancha { get; set; }
 
     // Relación con Equipo
     public int? EquipoId { get; set; } // Opcional si la reserva no es para un equipo
-    public Equipo Equipo { get; set; }
+    public virtual Equipo Equipo { get; set; }
 
     public int? PuntuacionEquipo { get; set; }
 }

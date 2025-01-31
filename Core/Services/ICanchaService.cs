@@ -6,4 +6,6 @@ public interface ICanchaService
     Task<CanchaDto> GetCanchaByIdAsync(int id);
     Task UpdateCanchaAsync(int id, UpdateCanchaDto dto);
     Task DeleteCanchaAsync(int id);
+
+    Task<IEnumerable<CanchaDto>> GetCanchasBySedeAsync(int sedeId);
 }

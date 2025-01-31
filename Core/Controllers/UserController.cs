@@ -117,6 +117,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("get-user-by-email/{email}")]
     public async Task<IActionResult> GetUserDetailsByEmail(string email)
     {
         var userDetails = await _userService.GetUserDetailsByEmail(email);
@@ -127,4 +128,7 @@ public class UserController : ControllerBase
 
         return Ok(userDetails);
     }
+
+
+
 }

@@ -14,7 +14,7 @@ public class Sede
 
     public virtual List<Cancha>? Canchas { get; set; }
 
-        
+    public virtual Address? Address { get; set; }
 
     public int? AddressId { get; set; }
 }

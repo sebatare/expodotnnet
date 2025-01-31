@@ -79,6 +79,8 @@ builder.Services.AddScoped<ICanchaService, CanchaService>();
 builder.Services.AddScoped<ICanchaRepository, CanchaRepository>();
 builder.Services.AddScoped<ISedeService, SedeService>();
 builder.Services.AddScoped<ISedeRepository, SedeRepository>();
+builder.Services.AddScoped<IReservaService, ReservaService>();
+builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 
 // Configuración para el servicio de correo
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));

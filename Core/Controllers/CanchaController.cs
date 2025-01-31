@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 
-public class ChanchaController : ControllerBase
+public class CanchaController : ControllerBase
 {
     private readonly ICanchaService _canchaService;
 
-    public ChanchaController(ICanchaService canchaService)
+    public CanchaController(ICanchaService canchaService)
     {
         _canchaService = canchaService;
     }
@@ -57,4 +57,18 @@ public class ChanchaController : ControllerBase
         }
     }
 
+    [HttpGet("get-cancha/{id}")]
+    public async Task<ActionResult<Cancha>> GetCanchaById(int id)
+    {
+        var cancha = await _canchaService.GetCanchaByIdAsync(id);
+        if (cancha == null) return NotFound();
+        return Ok(cancha);
+    }
+
+    [HttpGet("get-canchas-by-sede/{id}")]
+    public async Task<ActionResult<IEnumerable<CanchaDto>>> GetCanchasBySede(int id)
+    {
+        var canchas = await _canchaService.GetCanchasBySedeAsync(id);
+        return Ok(canchas);
+    }
 }

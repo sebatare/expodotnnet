@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace proyectodotnet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250120204254_NewTables")]
+    partial class NewTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,10 +117,6 @@ namespace proyectodotnet.Migrations
 
                     b.Property<float?>("Largo")
                         .HasColumnType("real");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Observacion")
                         .HasColumnType("nvarchar(max)");
@@ -356,28 +355,23 @@ namespace proyectodotnet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CanchaId")
+                    b.Property<int>("CanchaId")
                         .HasColumnType("int");
 
                     b.Property<int?>("EquipoId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaHoraFin")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HoraInicio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("HoraTermino")
+                    b.Property<DateTime>("FechaHoraInicio")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("PuntuacionEquipo")
                         .HasColumnType("int");
 
                     b.Property<string>("UsuarioId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -689,7 +683,9 @@ namespace proyectodotnet.Migrations
                 {
                     b.HasOne("Cancha", "Cancha")
                         .WithMany("Reservas")
-                        .HasForeignKey("CanchaId");
+                        .HasForeignKey("CanchaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Equipo", "Equipo")
                         .WithMany("Reservas")
@@ -697,7 +693,9 @@ namespace proyectodotnet.Migrations
 
                     b.HasOne("User", "Usuario")
                         .WithMany("Reservas")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cancha");
 

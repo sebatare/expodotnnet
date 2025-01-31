@@ -46,13 +46,17 @@ public class CanchaRepository : ICanchaRepository
             await _context.SaveChangesAsync();
         }
     }
-
-
-    //LISTA DE CANCHAS OBTENIDOS POR IDs
     public async Task<List<Cancha>> GetCanchasByIdsAsync(List<int> ids)
     {
         return await _context.Cancha
                              .Where(c => ids.Contains(c.Id))
+                             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Cancha>> GetCanchasBySedeAsync(int sedeId)
+    {
+        return await _context.Cancha
+                             .Where(c => c.SedeId == sedeId)
                              .ToListAsync();
     }
 }
