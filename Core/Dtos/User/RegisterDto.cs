@@ -14,4 +14,6 @@ public class RegisterDto
 
 
     public required string LastName { get; set; }
+
+    public string? PhoneNumber { get; set; }
 }

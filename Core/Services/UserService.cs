@@ -39,7 +39,8 @@ public class UserService : IUserService
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
-            UserName = model.Email
+            UserName = model.Email,
+            PhoneNumber = model.PhoneNumber
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
