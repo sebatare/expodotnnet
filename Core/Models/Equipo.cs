@@ -1,3 +1,5 @@
+using proyectodotnet.Migrations;
+
 public class Equipo
 {
     public int Id { get; set; }
@@ -9,7 +11,7 @@ public class Equipo
     public virtual Club? Club { get; set; }
 
     // Relación con Usuarios
-    public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
+    public virtual ICollection<Usuario> Miembros { get; set; }
 
     // Relación con Reservas
     public virtual ICollection<Reserva> Reservas { get; set; }

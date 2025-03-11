@@ -15,9 +15,19 @@ public class ApplicationDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         // Índice único para el campo 'Email'
+        
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+
+        builder.Entity<User>()
+            .HasMany(u => u.Equipos)
+            .WithMany(e => e.Usuario)
+            .UsingEntity<Dictionary<string, object>>(
+                "UsuarioEquipo", // Nombre de la tabla intermedia que EF creará automáticamente
+                j => j.HasOne<Equipo>().WithMany().HasForeignKey("EquipoId"),
+                j => j.HasOne<Usuario>().WithMany().HasForeignKey("UsuarioId")
+            );
 
         // Configuración del modelo ChatMessage
         builder.Entity<ChatMessage>()
@@ -62,19 +72,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasOne(a => a.Usuario2)
             .WithMany()
             .HasForeignKey(a => a.UsuarioId2)
-            .OnDelete(DeleteBehavior.Restrict); // Restringir la otra relación
-
-        // Relación muchos a muchos: Usuario - Equipo
-        builder.Entity<UsuarioEquipo>()
-            .HasOne(ue => ue.Usuario)
-            .WithMany(u => u.UsuarioEquipos)
-            .HasForeignKey(ue => ue.UsuarioId);
-
-        builder.Entity<UsuarioEquipo>()
-            .HasOne(ue => ue.Equipo)
-            .WithMany(e => e.UsuarioEquipos)
-            .HasForeignKey(ue => ue.EquipoId);
-
+            .OnDelete(DeleteBehavior.Restrict); // Restringir la otra relación    
 
     }
 
