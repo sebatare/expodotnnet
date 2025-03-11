@@ -18,8 +18,10 @@ public class User : IdentityUser
 
     public virtual ICollection<Address> Addresses { get; set; }
     public virtual ICollection<Amistad> Amistades { get; set; }
-    public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
     public virtual ICollection<Reserva> Reservas { get; set; }
+    public virtual ICollection<Reserva> Equipos { get; set; }
+
+
 
 
 }
