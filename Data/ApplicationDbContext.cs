@@ -15,19 +15,24 @@ public class ApplicationDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         // Índice único para el campo 'Email'
-        
+
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
 
-        builder.Entity<User>()
-            .HasMany(u => u.Equipos)
-            .WithMany(e => e.Usuario)
-            .UsingEntity<Dictionary<string, object>>(
-                "UsuarioEquipo", // Nombre de la tabla intermedia que EF creará automáticamente
-                j => j.HasOne<Equipo>().WithMany().HasForeignKey("EquipoId"),
-                j => j.HasOne<Usuario>().WithMany().HasForeignKey("UsuarioId")
-            );
+        // Configuración de la entidad intermedia para Usuario - Equipo
+        builder.Entity<UsuarioEquipo>()
+            .HasKey(ue => new { ue.UserId, ue.EquipoId }); // Clave compuesta
+
+        builder.Entity<UsuarioEquipo>()
+            .HasOne(ue => ue.User)
+            .WithMany(u => u.UsuarioEquipos)
+            .HasForeignKey(ue => ue.UserId);
+
+        builder.Entity<UsuarioEquipo>()
+            .HasOne(ue => ue.Equipo)
+            .WithMany(e => e.UsuarioEquipos)
+            .HasForeignKey(ue => ue.EquipoId);
 
         // Configuración del modelo ChatMessage
         builder.Entity<ChatMessage>()

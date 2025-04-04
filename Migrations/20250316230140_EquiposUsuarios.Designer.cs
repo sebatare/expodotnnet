@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace proyectodotnet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250316230140_EquiposUsuarios")]
+    partial class EquiposUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,7 +230,7 @@ namespace proyectodotnet.Migrations
 
                     b.HasIndex("UsuariosId");
 
-                    b.ToTable("EquipoUser");
+                    b.ToTable("UsuarioEquipo", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -534,24 +537,6 @@ namespace proyectodotnet.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("UsuarioEquipo", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("EquipoId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Confirmado")
-                        .HasColumnType("bit");
-
-                    b.HasKey("UserId", "EquipoId");
-
-                    b.HasIndex("EquipoId");
-
-                    b.ToTable("UsuarioEquipo");
-                });
-
             modelBuilder.Entity("Address", b =>
                 {
                     b.HasOne("User", "User")
@@ -729,25 +714,6 @@ namespace proyectodotnet.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("UsuarioEquipo", b =>
-                {
-                    b.HasOne("Equipo", "Equipo")
-                        .WithMany("UsuarioEquipos")
-                        .HasForeignKey("EquipoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("User", "User")
-                        .WithMany("UsuarioEquipos")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Equipo");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Address", b =>
                 {
                     b.Navigation("Sede")
@@ -767,8 +733,6 @@ namespace proyectodotnet.Migrations
             modelBuilder.Entity("Equipo", b =>
                 {
                     b.Navigation("Reservas");
-
-                    b.Navigation("UsuarioEquipos");
                 });
 
             modelBuilder.Entity("Sede", b =>
@@ -783,8 +747,6 @@ namespace proyectodotnet.Migrations
                     b.Navigation("Amistades");
 
                     b.Navigation("Reservas");
-
-                    b.Navigation("UsuarioEquipos");
                 });
 #pragma warning restore 612, 618
         }
