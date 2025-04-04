@@ -1,4 +1,5 @@
-obj\
+# Ignorar carpetas de compilación de .NET
+bin/
+obj/
 appsettings.json
 appsettings.Development.json
-bin\
