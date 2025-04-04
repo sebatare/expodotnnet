@@ -11,8 +11,11 @@ public class Equipo
     public virtual Club? Club { get; set; }
 
     // Relación con Usuarios
-    public virtual ICollection<Usuario> Miembros { get; set; }
+    public virtual ICollection<User> Usuarios { get; set; }
 
     // Relación con Reservas
     public virtual ICollection<Reserva> Reservas { get; set; }
+
+    // Relación con Usuarios a través de la entidad intermedia
+    public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
 }

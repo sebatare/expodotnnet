@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace proyectodotnet.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250214153453_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,21 +216,6 @@ namespace proyectodotnet.Migrations
                     b.HasIndex("ClubId");
 
                     b.ToTable("Equipo");
-                });
-
-            modelBuilder.Entity("EquipoUser", b =>
-                {
-                    b.Property<int>("EquiposId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsuariosId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("EquiposId", "UsuariosId");
-
-                    b.HasIndex("UsuariosId");
-
-                    b.ToTable("EquipoUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -536,18 +524,34 @@ namespace proyectodotnet.Migrations
 
             modelBuilder.Entity("UsuarioEquipo", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("EquipoId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Confirmado")
-                        .HasColumnType("bit");
+                    b.Property<int>("Goles")
+                        .HasColumnType("int");
 
-                    b.HasKey("UserId", "EquipoId");
+                    b.Property<string>("Posicion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Puntuacion")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("EquipoId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("UsuarioEquipo");
                 });
@@ -631,21 +635,6 @@ namespace proyectodotnet.Migrations
                         .HasForeignKey("ClubId");
 
                     b.Navigation("Club");
-                });
-
-            modelBuilder.Entity("EquipoUser", b =>
-                {
-                    b.HasOne("Equipo", null)
-                        .WithMany()
-                        .HasForeignKey("EquiposId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("User", null)
-                        .WithMany()
-                        .HasForeignKey("UsuariosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -737,15 +726,15 @@ namespace proyectodotnet.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", "User")
+                    b.HasOne("User", "Usuario")
                         .WithMany("UsuarioEquipos")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Equipo");
 
-                    b.Navigation("User");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Address", b =>
