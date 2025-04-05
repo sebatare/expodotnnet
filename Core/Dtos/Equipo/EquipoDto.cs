@@ -1,6 +1,4 @@
-using proyectodotnet.Migrations;
-
-public class Equipo
+public class EquipoDto
 {
     public int Id { get; set; }
     public string Nombre { get; set; }
@@ -8,14 +6,10 @@ public class Equipo
 
     // Relación con Club
     public int? ClubId { get; set; } // Opcional si el equipo no pertenece a un club
-    public virtual Club? Club { get; set; }
 
     // Relación con Reservas
-    public virtual ICollection<Reserva> Reservas { get; set; }
+    public virtual ICollection<ReservaDto> Reservas { get; set; }
 
     // Relación con Usuarios a través de la entidad intermedia
     public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
-
-    public string CapitanId { get; set; } // ID del capitán del equipo
-    public virtual User Capitan { get; set; } // Usuario que es el zcapitán del equipo
 }

@@ -15,7 +15,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
 
         // Índice único para el campo 'Email'
-
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
@@ -78,6 +77,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .WithMany()
             .HasForeignKey(a => a.UsuarioId2)
             .OnDelete(DeleteBehavior.Restrict); // Restringir la otra relación    
+
+        builder.Entity<Equipo>()
+            .HasOne(e => e.Capitan)
+            .WithMany()
+            .HasForeignKey(e => e.CapitanId)
+            .OnDelete(DeleteBehavior.Restrict); // Evitar cascadas al eliminar un capitán
 
     }
 

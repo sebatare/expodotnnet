@@ -21,7 +21,7 @@ public class User : IdentityUser
     public virtual ICollection<Reserva> Reservas { get; set; }
 
      public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
-    public virtual ICollection<Equipo> Equipos { get; set; }
+
 
 
 
