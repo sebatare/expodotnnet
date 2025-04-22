@@ -1,13 +1,13 @@
-public class UsuarioEquipo
+public class UserTeam
 {
     // Claves compuestas
     public string UserId { get; set; }
-    public int EquipoId { get; set; }
 
     // Propiedad adicional para la confirmación
     public bool Confirmado { get; set; }
 
-    // Navegación
+    // Navegación   
     public virtual User User { get; set; }
-    public virtual Equipo Equipo { get; set; }
+    public int TeamId { get; set; } // Asegúrate de que esta propiedad esté aquí
+    public virtual Team Team { get; set; }
 }

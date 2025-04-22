@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 public interface IUserService
 {
-    Task<IdentityResult> RegisterUserAsync(RegisterDto model);
+    Task<IdentityResult> RegisterUserAsync(UserRegisterDto model);
     Task<(bool Success, string Token)> LoginUserAsync(LoginDto model);
     //Task<IdentityResult> LogoutAsync();
     Task<bool> SendPasswordResetTokenAsync(string email);

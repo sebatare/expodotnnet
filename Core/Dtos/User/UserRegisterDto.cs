@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-public class RegisterDto
+public class UserRegisterDto
 {
 
     public required string Email { get; set; }
@@ -16,4 +14,7 @@ public class RegisterDto
     public required string LastName { get; set; }
 
     public string? PhoneNumber { get; set; }
+
+    public required bool Invitado { get; set; } = false;
+    
 }

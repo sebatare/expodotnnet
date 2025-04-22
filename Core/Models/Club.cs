@@ -9,5 +9,5 @@ public class Club
     public virtual User Capitan { get; set; }
 
     // Relación con Equipo
-    public virtual ICollection<Equipo>? Equipos { get; set; }
+    public virtual ICollection<Team>? Teams { get; set; }
 }

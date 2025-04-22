@@ -13,7 +13,7 @@ public class UserController : ControllerBase
 
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto model)
+    public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
     {
         if (!ModelState.IsValid)
         {

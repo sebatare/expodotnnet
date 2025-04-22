@@ -18,20 +18,24 @@ public class ApplicationDbContext : IdentityDbContext<User>
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+        builder.Entity<User>()
+            .HasIndex(u => u.PhoneNumber)
+            .IsUnique();
 
         // Configuración de la entidad intermedia para Usuario - Equipo
-        builder.Entity<UsuarioEquipo>()
-            .HasKey(ue => new { ue.UserId, ue.EquipoId }); // Clave compuesta
+        // Relación entre Usuario y Equipo (tabla intermedia UserTeam)
+        builder.Entity<UserTeam>()
+            .HasKey(ue => new { ue.UserId, ue.TeamId }); // Clave compuesta
 
-        builder.Entity<UsuarioEquipo>()
+        builder.Entity<UserTeam>()
             .HasOne(ue => ue.User)
-            .WithMany(u => u.UsuarioEquipos)
+            .WithMany(u => u.UserTeams)
             .HasForeignKey(ue => ue.UserId);
 
-        builder.Entity<UsuarioEquipo>()
-            .HasOne(ue => ue.Equipo)
-            .WithMany(e => e.UsuarioEquipos)
-            .HasForeignKey(ue => ue.EquipoId);
+        builder.Entity<UserTeam>()
+            .HasOne(ue => ue.Team)
+            .WithMany(t => t.UserTeams)
+            .HasForeignKey(ue => ue.TeamId); // Asegúrate de que el nombre coincida con la propiedad en UserTeam
 
         // Configuración del modelo ChatMessage
         builder.Entity<ChatMessage>()
@@ -78,11 +82,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
             .HasForeignKey(a => a.UsuarioId2)
             .OnDelete(DeleteBehavior.Restrict); // Restringir la otra relación    
 
-        builder.Entity<Equipo>()
+        builder.Entity<Team>()
             .HasOne(e => e.Capitan)
             .WithMany()
             .HasForeignKey(e => e.CapitanId)
-            .OnDelete(DeleteBehavior.Restrict); // Evitar cascadas al eliminar un capitán
+            .OnDelete(DeleteBehavior.Restrict);  // Evitar cascadas al eliminar un capitán
+
 
     }
 
@@ -96,6 +101,12 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Sede> Sede { get; set; }
 
     public DbSet<Reserva> Reserva { get; set; }
+
+    public DbSet<Team> Teams { get; set; }
+
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<UserTeam> UserTeams { get; set; }
 
 }
 

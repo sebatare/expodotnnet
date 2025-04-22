@@ -24,10 +24,10 @@ public class UserService : IUserService
 
 
     //REGISTRO DE USUARIO
-    public async Task<IdentityResult> RegisterUserAsync(RegisterDto model)
+    public async Task<IdentityResult> RegisterUserAsync(UserRegisterDto dto)
     {
         // Verificar si el correo electrónico ya existe
-        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        var existingUser = await _userManager.FindByEmailAsync(dto.Email);
         if (existingUser != null)
         {
             // Si el usuario ya existe, devolvemos un resultado de fallo
@@ -36,14 +36,15 @@ public class UserService : IUserService
 
         var user = new User
         {
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            UserName = model.Email,
-            PhoneNumber = model.PhoneNumber
+            Email = dto.Email,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            UserName = dto.Email,
+            PhoneNumber = dto.PhoneNumber,
+            Invitado = dto.Invitado
         };
 
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (result.Succeeded)
         {
@@ -61,10 +62,10 @@ public class UserService : IUserService
 
 
     //INICIO DE SESIÓN
-    public async Task<(bool Success, string Token)> LoginUserAsync(LoginDto model)
+    public async Task<(bool Success, string Token)> LoginUserAsync(LoginDto dto)
     {
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
         {
             return (false, null);
         }
@@ -116,6 +117,7 @@ public class UserService : IUserService
         // Mapea los datos a un DTO
         return new UserDetailsDto
         {
+            Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
@@ -123,9 +125,7 @@ public class UserService : IUserService
         };
     }
 
-public async Task<UserDetailsDto> GetUserDetailsByEmail(string userEmail)
-
-
+    public async Task<UserDetailsDto> GetUserDetailsByEmail(string userEmail)
     {
         var user = await _userManager.FindByEmailAsync(userEmail); // Usa UserManager para buscar el usuario
         if (user == null) return null;
@@ -135,16 +135,14 @@ public async Task<UserDetailsDto> GetUserDetailsByEmail(string userEmail)
 
         // Mapea los datos a un DTO
         return new UserDetailsDto
-        {
+        {   
+            Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
             Roles = roles.ToList() // Asignar los roles al DTO
         };
     }
-
-
-
 
     public async Task<List<UserDetailsDto>> GetAllUsersAsync()
     {

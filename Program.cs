@@ -71,6 +71,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // Agregar servicios personalizados (por ejemplo, IUserService)
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ChatRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
@@ -81,6 +82,9 @@ builder.Services.AddScoped<ISedeService, SedeService>();
 builder.Services.AddScoped<ISedeRepository, SedeRepository>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddScoped<ITeamService, TeamService>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IUserTeamRepository, UserTeamRepository>();
 
 // Configuración para el servicio de correo
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));

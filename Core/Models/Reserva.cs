@@ -16,8 +16,8 @@ public class Reserva
     public virtual Cancha Cancha { get; set; }
 
     // Relación con Equipo
-    public int? EquipoId { get; set; } // Opcional si la reserva no es para un equipo
-    public virtual Equipo Equipo { get; set; }
+    public int? TeamId { get; set; } // Opcional si la reserva no es para un equipo
+    public virtual Team Team { get; set; }
 
     public int? PuntuacionEquipo { get; set; }
 }

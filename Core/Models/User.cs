@@ -12,6 +12,8 @@ public class User : IdentityUser
 
     public string? Rut { get; set; }
 
+    public bool Invitado { get; set; } = false;
+
 
     // Permitir que el campo Username sea nulo o vacío
     public override string? UserName { get; set; }
@@ -20,7 +22,7 @@ public class User : IdentityUser
     public virtual ICollection<Amistad> Amistades { get; set; }
     public virtual ICollection<Reserva> Reservas { get; set; }
 
-     public virtual ICollection<UsuarioEquipo> UsuarioEquipos { get; set; }
+    public virtual ICollection<UserTeam> UserTeams { get; set; }
 
 
 
