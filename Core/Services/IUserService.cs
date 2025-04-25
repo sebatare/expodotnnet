@@ -12,6 +12,8 @@ public interface IUserService
     Task<List<UserDetailsDto>> GetAllUsersAsync();
     Task<UserDetailsDto> GetUserDetailsByEmail(string userEmail);
 
+    Task<List<UserDetailsDto>> GetUsersByTeamMemberDtoAsync(List<TeamMemberDto> dtos);
+
 
 
 }

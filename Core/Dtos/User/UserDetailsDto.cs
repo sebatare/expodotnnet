@@ -7,5 +7,4 @@ public class UserDetailsDto
 
     public List<string> Roles { get; set; }
 
-    public string Invitado { get; set; }
 }

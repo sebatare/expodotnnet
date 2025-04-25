@@ -17,6 +17,7 @@ public class ReservaService : IReservaService
 
     public async Task<CreateReservaDto> CreateReservaAsync(CreateReservaDto newReserva, string userId)
     {
+        Console.WriteLine("Iniciando el proceso de servicio de reserva...");
 
 
         var user = await _userService.GetUserDetailsAsync(userId);
@@ -24,7 +25,6 @@ public class ReservaService : IReservaService
         {
             throw new Exception("User not found");
         }
-        newReserva.UsuarioId = userId;
 
         var disponible = await _reservaRepository.CanchaDisponible(newReserva.CanchaId, newReserva.Fecha, newReserva.HoraInicio);
 
@@ -39,7 +39,9 @@ public class ReservaService : IReservaService
             HoraInicio = newReserva.HoraInicio, // Hora de término
             HoraTermino = newReserva.HoraTermino, // ID del usuario
             UsuarioId = userId, // ID del usuario
-            CanchaId = 8 // ID de la cancha
+            CanchaId = newReserva.CanchaId,
+            TeamId = newReserva.EquipoId // ID del equipo (opcional)
+
         };
         await _reservaRepository.CreateReservaAsync(reserva);
         return newReserva;

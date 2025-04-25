@@ -10,9 +10,21 @@ public class TeamController : ControllerBase
     }
 
     [HttpPost("add-team")]
-    public async Task<IActionResult> RegisterTeam([FromBody] RegisterTeamDto equipo)
+    public async Task<IActionResult> RegisterTeam([FromBody] TeamRegisterDto equipoDto)
     {
-        await _teamService.RegisterTeamAsync(equipo);
-        return Ok(new { Message = "Equipo creado exitosamente." });
+        var equipo = await _teamService.RegisterTeamAsync(equipoDto);
+
+        return Ok(new
+        {
+            Message = "Equipo creado exitosamente.",
+            Team = new TeamRegisterDto
+            {
+                Id = equipo.Id,
+                Nombre = equipo.Nombre,
+                FechaCreacion = equipo.FechaCreacion,
+                CapitanId = equipo.CapitanId,
+                ClubId = equipo.ClubId
+            }
+        });
     }
-} 
+}

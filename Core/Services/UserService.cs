@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,11 +27,9 @@ public class UserService : IUserService
     //REGISTRO DE USUARIO
     public async Task<IdentityResult> RegisterUserAsync(UserRegisterDto dto)
     {
-        // Verificar si el correo electrónico ya existe
         var existingUser = await _userManager.FindByEmailAsync(dto.Email);
         if (existingUser != null)
         {
-            // Si el usuario ya existe, devolvemos un resultado de fallo
             return IdentityResult.Failed(new IdentityError { Code = "Correo existente", Description = "El correo electrónico ya está registrado." });
         }
 
@@ -40,25 +39,23 @@ public class UserService : IUserService
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             UserName = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
-            Invitado = dto.Invitado
+            PhoneNumber = dto.PhoneNumber
         };
 
-        var result = await _userManager.CreateAsync(user, dto.Password);
+        var hasPassword = !string.IsNullOrWhiteSpace(dto.Password);
+        var result = hasPassword
+            ? await _userManager.CreateAsync(user, dto.Password)
+            : await _userManager.CreateAsync(user);
 
         if (result.Succeeded)
         {
-            //ASIGNACION DE ROL AL CREAR USUARIO
-            await _userManager.AddToRoleAsync(user, "Administrador");
-            // Si la creación del usuario fue exitosa, devolvemos el resultado con éxito
-            return IdentityResult.Success;
+            var role = hasPassword ? "Player" : "Guest";
+            await _userManager.AddToRoleAsync(user, role);
         }
-        else
-        {
-            // Si hay errores, los devolvemos
-            return result;
-        }
+
+        return result;
     }
+
 
 
     //INICIO DE SESIÓN
@@ -135,7 +132,7 @@ public class UserService : IUserService
 
         // Mapea los datos a un DTO
         return new UserDetailsDto
-        {   
+        {
             Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
@@ -165,6 +162,74 @@ public class UserService : IUserService
 
             // Agregar el DTO a la lista
             userDetails.Add(userDetail);
+        }
+
+        return userDetails;
+    }
+
+
+    public async Task<List<UserDetailsDto>> GetUsersByTeamMemberDtoAsync(List<TeamMemberDto> dtos)
+    {
+        var userDetails = new List<UserDetailsDto>();
+        Console.WriteLine($"Recibidos {dtos.Count} DTOs de miembros del equipo.");
+
+        foreach (var dto in dtos)
+        {
+            User? user = null;
+
+            Console.WriteLine($"Buscando usuario por ID: {dto.Id}, Email: {dto.Email}, Teléfono: {dto.PhoneNumber}");
+
+            // Buscar por ID si es un GUID válido
+            if (!string.IsNullOrWhiteSpace(dto.Id) && Guid.TryParse(dto.Id, out _))
+            {
+                user = await _userManager.FindByIdAsync(dto.Id);
+            }
+
+            // Buscar por Email
+            if (user == null && !string.IsNullOrWhiteSpace(dto.Email))
+            {
+                user = await _userManager.FindByEmailAsync(dto.Email);
+            }
+
+            // Buscar por Teléfono
+            if (user == null && !string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            {
+                user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == dto.PhoneNumber);
+            }
+
+            // Si no se encuentra, crearlo como invitado
+            if (user == null)
+            {
+                var generatedEmail = dto.Email ?? $"{Guid.NewGuid()}@placeholder.local";
+                user = new User
+                {
+                    FirstName = dto.FirstName ?? "Nombre desconocido",
+                    LastName = dto.LastName ?? "Apellido desconocido",
+                    Email = dto.Email ?? $"{Guid.NewGuid()}@placeholder.local",
+                    PhoneNumber = dto.PhoneNumber,
+                    UserName = generatedEmail // ✅ Este campo es obligatorio
+                };
+                Console.WriteLine("Creando usuario invitado...");
+                Console.WriteLine(user);
+
+                var result = await _userManager.CreateAsync(user);
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine($"❌ Error al crear el usuario: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    continue; // Saltar este usuario si falló la creación
+                }
+
+                await _userManager.AddToRoleAsync(user, "Guest");
+                Console.WriteLine($"✅ Usuario invitado creado: {user.Email}");
+            }
+
+            userDetails.Add(new UserDetailsDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            });
         }
 
         return userDetails;
