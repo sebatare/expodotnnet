@@ -10,14 +10,14 @@ public class ReservaRepository : IReservaRepository
     }
 
     public async Task<bool> CanchaDisponible(int CanchaId,DateTime Fecha, DateTime HoraInicio){
-        return !await _context.Reserva.AnyAsync(x => x.CanchaId == CanchaId && x.Fecha == Fecha && x.HoraInicio == HoraInicio);
+        return !await _context.Reservas.AnyAsync(x => x.CanchaId == CanchaId && x.Fecha == Fecha && x.HoraInicio == HoraInicio);
     }
 
     public async Task<Reserva> CreateReservaAsync(Reserva newReserva)
     {
         try
         {
-            await _context.Reserva.AddAsync(newReserva);
+            await _context.Reservas.AddAsync(newReserva);
             await _context.SaveChangesAsync();
             return newReserva;
         }
@@ -26,4 +26,11 @@ public class ReservaRepository : IReservaRepository
             throw new Exception(ex.Message);
         }
     }
+
+    public async Task<Reserva> ObtenerReservaConflictiva(int canchaId, DateTime fecha, DateTime horaInicio)
+{
+    return await _context.Reservas
+        .Where(r => r.CanchaId == canchaId && r.Fecha == fecha && r.HoraInicio <= horaInicio && r.HoraTermino > horaInicio)
+        .FirstOrDefaultAsync();
+}
 }

@@ -100,7 +100,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
 
     public DbSet<Sede> Sede { get; set; }
 
-    public DbSet<Reserva> Reserva { get; set; }
+    public DbSet<Reserva> Reservas { get; set; }
 
     public DbSet<Team> Teams { get; set; }
 

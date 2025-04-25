@@ -19,7 +19,6 @@ public class ReservaService : IReservaService
     {
         Console.WriteLine("Iniciando el proceso de servicio de reserva...");
 
-
         var user = await _userService.GetUserDetailsAsync(userId);
         if (user == null)
         {
@@ -30,19 +29,27 @@ public class ReservaService : IReservaService
 
         if (!disponible)
         {
-            throw new ReservaNoDisponibleException();
+            // Obtener detalles de la reserva conflictiva
+            var reservaExistente = await _reservaRepository.ObtenerReservaConflictiva(newReserva.CanchaId, newReserva.Fecha, newReserva.HoraInicio);
+            throw new ReservaNoDisponibleException(
+                reservaExistente.CanchaId,
+                reservaExistente.Fecha,
+                reservaExistente.HoraInicio,
+                reservaExistente.HoraTermino
+            );
         }
+
         var reserva = new Reserva
         {
-            FechaCreacion = DateTime.Now, // Fecha completa
-            Fecha = newReserva.Fecha, // Hora de inicio
-            HoraInicio = newReserva.HoraInicio, // Hora de término
-            HoraTermino = newReserva.HoraTermino, // ID del usuario
-            UsuarioId = userId, // ID del usuario
+            FechaCreacion = DateTime.Now,
+            Fecha = newReserva.Fecha,
+            HoraInicio = newReserva.HoraInicio,
+            HoraTermino = newReserva.HoraTermino,
+            UsuarioId = userId,
             CanchaId = newReserva.CanchaId,
-            TeamId = newReserva.EquipoId // ID del equipo (opcional)
-
+            TeamId = newReserva.EquipoId
         };
+
         await _reservaRepository.CreateReservaAsync(reserva);
         return newReserva;
     }
