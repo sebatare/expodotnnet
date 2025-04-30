@@ -84,7 +84,7 @@ public class UserController : ControllerBase
     }
 
     //HAY QUE ESPECIFICAR EL TIPO DE AUTENTICACION, YA QUE POR DEFAULT, CON IDENTIDAD SE USA COOKIES
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [HttpGet("user-details")]
     public async Task<IActionResult> GetUserDetails()
     {

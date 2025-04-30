@@ -27,35 +27,75 @@ public class UserService : IUserService
     //REGISTRO DE USUARIO
     public async Task<IdentityResult> RegisterUserAsync(UserRegisterDto dto)
     {
+        // 1. Validación de email existente
+        if (string.IsNullOrEmpty(dto.Email))
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = "EmailRequired",
+                Description = "El correo electrónico es obligatorio."
+            });
+        }
+
         var existingUser = await _userManager.FindByEmailAsync(dto.Email);
         if (existingUser != null)
         {
-            return IdentityResult.Failed(new IdentityError { Code = "Correo existente", Description = "El correo electrónico ya está registrado." });
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = "DuplicateEmail",
+                Description = "El correo electrónico ya está registrado."
+            });
         }
 
+        // 2. Creación del usuario
         var user = new User
         {
             Email = dto.Email,
+            UserName = dto.Email,  // Asegurar que UserName no sea null
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            UserName = dto.Email,
-            PhoneNumber = dto.PhoneNumber
+            PhoneNumber = dto.PhoneNumber,
+            EmailConfirmed = true  // Opcional: si no requieres confirmación
         };
 
-        var hasPassword = !string.IsNullOrWhiteSpace(dto.Password);
-        var result = hasPassword
-            ? await _userManager.CreateAsync(user, dto.Password)
-            : await _userManager.CreateAsync(user);
-
-        if (result.Succeeded)
+        // 3. Creación del usuario (con/sin password)
+        IdentityResult result;
+        if (!string.IsNullOrWhiteSpace(dto.Password))
         {
-            var role = hasPassword ? "Player" : "Guest";
-            await _userManager.AddToRoleAsync(user, role);
+            result = await _userManager.CreateAsync(user, dto.Password);
+        }
+        else
+        {
+            result = await _userManager.CreateAsync(user);
         }
 
-        return result;
-    }
+        // 4. Si falla la creación, retornar error inmediatamente
+        if (!result.Succeeded)
+        {
+            return result;
+        }
 
+        // 5. Asignación de rol (solo si el usuario se creó correctamente)
+        var role = !string.IsNullOrWhiteSpace(dto.Password) ? "Player" : "Guest";
+
+        // Verificar que el rol exista
+        if (!await _roleManager.RoleExistsAsync(role))
+        {
+            await _roleManager.CreateAsync(new IdentityRole(role));
+        }
+
+        var roleResult = await _userManager.AddToRoleAsync(user, role);
+
+        // 6. Combinar resultados
+        if (!roleResult.Succeeded)
+        {
+            // Opcional: revertir creación si falla la asignación de rol
+            await _userManager.DeleteAsync(user);
+            return roleResult;
+        }
+
+        return IdentityResult.Success;
+    }
 
 
     //INICIO DE SESIÓN
