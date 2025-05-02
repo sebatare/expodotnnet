@@ -1,6 +1,7 @@
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using proyectodotnet.Core.Models;
 
 public class EmailService : IEmailService
 {

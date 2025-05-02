@@ -1,3 +1,7 @@
+using proyectodotnet.Core.Models;
+using proyectodotnet.Data;
+namespace proyectodotnet.Core.Repositories;
+
 public class TeamRepository : ITeamRepository
 {
     private readonly ApplicationDbContext _context;

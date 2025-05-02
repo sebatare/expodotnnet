@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public interface ISedeRepository{
     Task<IEnumerable<Sede>> GetAllSedesAsync();
     Task<Sede> GetSedeByIdAsync(int id);

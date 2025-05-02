@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using proyectodotnet.Core.Models;
 
 public class CanchaController : ControllerBase
 {

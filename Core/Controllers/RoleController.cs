@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using proyectodotnet.Core.Models;
 
 public class RoleController : ControllerBase
 {

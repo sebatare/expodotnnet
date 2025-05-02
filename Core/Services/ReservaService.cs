@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public class ReservaService : IReservaService
 {
     private readonly IReservaRepository _reservaRepository;

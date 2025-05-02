@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using proyectodotnet.Core.Models;
+using proyectodotnet.Data;
 
 public class UserRepository : IUserRepository
 {

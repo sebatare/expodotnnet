@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public interface ISedeService
 {
     Task<IEnumerable<SedeDto>> GetAllSedesAsync();

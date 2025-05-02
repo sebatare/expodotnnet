@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public class TeamService : ITeamService
 {
     private readonly ITeamRepository _teamRepository;

@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
+    private readonly IAddressRepository _addressRepository;
 
-    public AddressController(IAddressService addressService)
+    public AddressController(IAddressService addressService, IAddressRepository addressRepository)
     {
+        _addressRepository = addressRepository;
         _addressService = addressService;
     }
 
@@ -88,6 +90,15 @@ public class AddressController : ControllerBase
         {
             return StatusCode(500, new { Message = "Ha ocurrido un error al eliminar dirección. Por favor, inténtelo más tarde." });
         }
+    }
+
+
+    [HttpGet("get-address/{id}")]
+    public async Task<IActionResult> GetAddressById(int id)
+    {
+        var address = await _addressRepository.GetAddressByIdAsync(id);
+        if (address == null) return NotFound();
+        return Ok(address);
     }
 }
 

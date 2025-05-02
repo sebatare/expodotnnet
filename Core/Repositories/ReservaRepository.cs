@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using proyectodotnet.Core.Models;
+using proyectodotnet.Data;
+namespace proyectodotnet.Core.Repositories;
 
 public class ReservaRepository : IReservaRepository
 {
@@ -9,7 +12,8 @@ public class ReservaRepository : IReservaRepository
         _context = context;
     }
 
-    public async Task<bool> CanchaDisponible(int CanchaId,DateTime Fecha, DateTime HoraInicio){
+    public async Task<bool> CanchaDisponible(int CanchaId, DateTime Fecha, DateTime HoraInicio)
+    {
         return !await _context.Reservas.AnyAsync(x => x.CanchaId == CanchaId && x.Fecha == Fecha && x.HoraInicio == HoraInicio);
     }
 
@@ -28,9 +32,9 @@ public class ReservaRepository : IReservaRepository
     }
 
     public async Task<Reserva> ObtenerReservaConflictiva(int canchaId, DateTime fecha, DateTime horaInicio)
-{
-    return await _context.Reservas
-        .Where(r => r.CanchaId == canchaId && r.Fecha == fecha && r.HoraInicio <= horaInicio && r.HoraTermino > horaInicio)
-        .FirstOrDefaultAsync();
-}
+    {
+        return await _context.Reservas
+            .Where(r => r.CanchaId == canchaId && r.Fecha == fecha && r.HoraInicio <= horaInicio && r.HoraTermino > horaInicio)
+            .FirstOrDefaultAsync();
+    }
 }

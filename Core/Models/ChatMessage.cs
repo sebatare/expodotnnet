@@ -1,3 +1,4 @@
+namespace proyectodotnet.Core.Models;
 public class ChatMessage
 {
     public int Id { get; set; }

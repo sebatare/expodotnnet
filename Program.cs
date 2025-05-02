@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using proyectodotnet.Data;
+using proyectodotnet.Core.Models;
+using proyectodotnet.Core.Repositories;
+using proyectodotnet.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -124,5 +128,7 @@ app.UseAuthorization();
 // Mapear controladores y el Hub de SignalR
 app.MapControllers();
 app.MapHub<ChatHub>("/chathub");
+Console.WriteLine("Conexión activa a SQL Server.....: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+
 
 app.Run();

@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public interface ITeamRepository
 {
     // Task<IEnumerable<Equipo>> GetAllTeamsAsync();

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-
+namespace proyectodotnet.Core.Models;
 public class User : IdentityUser
 {
     public string FirstName { get; set; }

@@ -1,3 +1,6 @@
+using proyectodotnet.Common;
+using proyectodotnet.Core.Models;
+namespace proyectodotnet.Core.Services;
 public class AddressService : IAddressService
 {
     private readonly IAddressRepository _addressRepository;
@@ -21,25 +24,9 @@ public class AddressService : IAddressService
         };
 
         await _addressRepository.AddAddressAsync(address);
-     
+
     }
 
-    public async Task<AddressDto> GetAddressByIdAsync(int id)
-    {
-        var address = await _addressRepository.GetAddressByIdAsync(id);
-
-        if (address == null) return null;
-
-        return new AddressDto
-        {
-            Calle = address.Calle,
-            Numero = address.Numero,
-            Otro = address.Otro,
-            Comuna = address.Comuna,
-            Ciudad = address.Ciudad,
-            Pais = address.Pais
-        };
-    }
 
     public async Task<IEnumerable<AddressDto>> GetAddressesByEmailAsync(string email)
     {
@@ -102,4 +89,28 @@ public class AddressService : IAddressService
     {
         await _addressRepository.DeleteAddressAsync(id);
     }
+
+    public async Task<Response<AddressDto>> GetAddressById(int id)
+{
+    var address = await _addressRepository.GetAddressByIdAsync(id);
+
+    if (address == null)
+    {
+        return Response<AddressDto>.Fail("Address not found");
+    }
+
+    var dto = new AddressDto
+    {
+        Id = address.Id,
+        Calle = address.Calle,
+        Numero = address.Numero,
+        Otro = address.Otro,
+        Comuna = address.Comuna,
+        Ciudad = address.Ciudad,
+        Pais = address.Pais
+    };
+
+    return Response<AddressDto>.Ok(dto);
+}
+
 }

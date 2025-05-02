@@ -1,3 +1,4 @@
+namespace proyectodotnet.Core.Models;
 public class Amistad
 {
     public int Id { get; set; }

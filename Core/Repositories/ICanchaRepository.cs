@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public interface ICanchaRepository
 {
     Task<IEnumerable<Cancha>> GetAllCanchasAsync();

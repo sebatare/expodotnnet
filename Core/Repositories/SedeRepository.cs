@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using proyectodotnet.Core.Models;
+using proyectodotnet.Data;
+namespace proyectodotnet.Core.Repositories;
 
 public class SedeRepository : ISedeRepository
 {
@@ -34,7 +37,7 @@ public class SedeRepository : ISedeRepository
         }
     }
 
-    public async Task <Sede> GetSedeByEmailAsync(string userEmail)
+    public async Task<Sede> GetSedeByEmailAsync(string userEmail)
     {
         try
         {
@@ -61,7 +64,7 @@ public class SedeRepository : ISedeRepository
     }
 
     public async Task<Sede> UpdateSedeAsync(Sede sede)
-    {   
+    {
         _context.Sede.Update(sede);
         await _context.SaveChangesAsync();
         return sede;

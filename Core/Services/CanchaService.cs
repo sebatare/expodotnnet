@@ -1,3 +1,5 @@
+using proyectodotnet.Core.Models;
+
 public class CanchaService : ICanchaService
 {
     private readonly ICanchaRepository _canchaRepository;

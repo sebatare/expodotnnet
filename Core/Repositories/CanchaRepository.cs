@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-
+using proyectodotnet.Core.Models;
+using proyectodotnet.Data;
+namespace proyectodotnet.Core.Repositories;
 public class CanchaRepository : ICanchaRepository
 {
     private readonly ApplicationDbContext _context;

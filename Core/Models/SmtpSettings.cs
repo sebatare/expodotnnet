@@ -1,3 +1,4 @@
+namespace proyectodotnet.Core.Models;
 public class SmtpSettings
 {
     public string Server { get; set; }

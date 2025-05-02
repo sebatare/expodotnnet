@@ -1,11 +1,15 @@
+using proyectodotnet.Core.Models;
+
 public class SedeService : ISedeService
 {
     private readonly ISedeRepository _sedeRepository;
     private readonly ICanchaRepository _canchaRepository;
-    public SedeService(ISedeRepository sedeRepository, ICanchaRepository canchaRepository)
+    private readonly IAddressRepository _addressRepository;
+    public SedeService(ISedeRepository sedeRepository, ICanchaRepository canchaRepository, IAddressRepository addressRepository)
     {
         _sedeRepository = sedeRepository;
         _canchaRepository = canchaRepository;
+        _addressRepository = addressRepository;
     }
 
     public async Task<IEnumerable<SedeDto>> GetAllSedesAsync()
@@ -76,6 +80,24 @@ public class SedeService : ISedeService
                 // Lanzar una excepción indicando las IDs que no existen
                 throw new Exception($"Las siguientes IDs de canchas no existen: {string.Join(", ", idsNoEncontrados)}");
             }
+        }
+
+        //Verificar direccion, si no existe, crearla
+        if (dto.AddressToSedeDto != null)
+        {
+            var address = new Address
+            {
+                Calle = dto.AddressToSedeDto.Calle,
+                Numero = dto.AddressToSedeDto.Numero,
+                Comuna = dto.AddressToSedeDto.Comuna
+            };
+
+            // Verificar si la dirección ya existe
+            var existingAddress = await _addressRepository.GetAddressByDetailsAsync(address.Calle, address.Numero, address.Comuna);
+        }
+        else
+        {
+            throw new Exception("La dirección es obligatoria.");
         }
 
         // Crear la nueva entidad Sede

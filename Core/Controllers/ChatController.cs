@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using proyectodotnet.Core.Repositories;
 
 [ApiController]
 [Route("api/[controller]")]
