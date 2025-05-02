@@ -96,9 +96,14 @@ public class AddressController : ControllerBase
     [HttpGet("get-address/{id}")]
     public async Task<IActionResult> GetAddressById(int id)
     {
-        var address = await _addressRepository.GetAddressByIdAsync(id);
-        if (address == null) return NotFound();
-        return Ok(address);
+        var response = await _addressService.GetAddressById(id);
+
+        if (!response.Success)
+        {
+            return NotFound(new { message = response.Message }); // <-- Devuelve 404 correctamente
+        }
+
+        return Ok(response.Data); // <-- 200 con el AddressDto
     }
 }
 

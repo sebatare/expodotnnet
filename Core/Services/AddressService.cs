@@ -91,26 +91,26 @@ public class AddressService : IAddressService
     }
 
     public async Task<Response<AddressDto>> GetAddressById(int id)
-{
-    var address = await _addressRepository.GetAddressByIdAsync(id);
-
-    if (address == null)
     {
-        return Response<AddressDto>.Fail("Address not found");
+        var address = await _addressRepository.GetAddressByIdAsync(id);
+
+        if (address == null)
+        {
+            return Response<AddressDto>.Fail("Address not found");
+        }
+
+        var dto = new AddressDto
+        {
+            Id = address.Id,
+            Calle = address.Calle,
+            Numero = address.Numero,
+            Otro = address.Otro,
+            Comuna = address.Comuna,
+            Ciudad = address.Ciudad,
+            Pais = address.Pais
+        };
+
+        return Response<AddressDto>.Ok(dto);
     }
-
-    var dto = new AddressDto
-    {
-        Id = address.Id,
-        Calle = address.Calle,
-        Numero = address.Numero,
-        Otro = address.Otro,
-        Comuna = address.Comuna,
-        Ciudad = address.Ciudad,
-        Pais = address.Pais
-    };
-
-    return Response<AddressDto>.Ok(dto);
-}
 
 }

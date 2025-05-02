@@ -1,3 +1,5 @@
+using proyectodotnet.Common;
+
 public interface IAddressService
 {
 
@@ -7,4 +9,6 @@ public interface IAddressService
     Task DeleteAddressAsync(int id);
 
     Task<IEnumerable<AddressDto>> GetAddressesByEmailAsync(string email);
+
+    Task<Response<AddressDto>> GetAddressById(int id);
 }
